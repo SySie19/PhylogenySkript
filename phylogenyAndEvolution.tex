@@ -7,8 +7,11 @@
 \usepackage{tikz}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{xyling}
-\usepackage{xy-pic}
+\usepackage{qtree}
+\usepackage{tikz-qtree}
+
+%\usepackage{xyling}
+%\usepackage{xy-picture}
 
 \usepackage{geometry}
 \geometry{
@@ -582,23 +585,101 @@ Note: source and taget does not matter in undirected graphs.
 	\end{itemize} 
 	
 	\begin{figure}[h!]
-		\begin{tabular}{c|c}
-			fkdsjdfk & ksdfjakdsj\\
-			\begin{xy-pic}
-				
-			/Tree{	 \K{$\zeta$} \B{dl} \Bbbk{dr}\\
-				\K{.} & \K{blub}\\
-				}
-			
-			\end{xy-pic}
+		\centering
+		\begin{tabular}{cc|cc}
+			biforcation &&& multiforcation\\
+			\begin{tikzpicture}
+				\Tree[.root [.left [.left left right ] right ] [.right left right ] ];		
+			\end{tikzpicture}
+			&&&
+			\begin{tikzpicture}
+				\Tree[.root [.1 11 12 ] [.2 21 22 ] [.3 31 32 33 34 ] ];
+			\end{tikzpicture}
+			\\
+		\end{tabular}
+		\caption{example trees for biforcation and multiforcation}
+	\end{figure}
+\end{defi}
+
+\begin{defi}
+	Let T rooted tree and $v \in V$ node in T. A \textbf{subtree} $T_v$  \underline{rooted } at v looks like this: \\
+	\begin{figure}[h!]
+		\begin{tabular}{ccc|ccc}
+			tree T: 
 			&
 			\begin{tikzpicture}
-				Inhalt...
+				\Tree[.root [.v [.v1 v11 v12 ] v2 [.v3 v31 v32 ] ] [.w w1 w2 ] ]
+			\end{tikzpicture}
+			&&& 
+			subtree $T_v$			
+			&
+			\begin{tikzpicture}
+				\Tree[.v [.v1 v11 v12 ] v2 [.v3 v31 v32 ] ]
 			\end{tikzpicture}
 			\\
 		\end{tabular}
 	\end{figure}
+	$T_v$ is tree with root v that is \textbf{induced by v} and all nodes reachable from v by a directed path starting at v. 
 \end{defi}
+
+\subsection{Tree traversals}
+For the following algorithms let T be a biforcating rooted tree (compare figure 17)\\
+(The algorithms run analog for multiforcation trees)
+	\begin{figure}[h!] 
+		\centering
+		\begin{tikzpicture} [sibling distance=13pt]
+		\Tree[.$\zeta$ [.j [.h [.g a b ] c ] e ] f ]
+		\end{tikzpicture}
+		\caption{We will use this tree T for all traversals }
+	\end{figure}
+\begin{itemize}
+	\item \textbf{Pre-order traversal (top down)} \\
+	\textit{Examine (e.g. print out a lable) the root of T\\
+		Traverse \underline{left} subtree\\
+		Travers \underline{right} subtree} \\
+	\textbf{Result on tree T:} $ \zeta, j, h, g, a, b, c, i, d, e, f$ \\
+	(Algoritmic representation: root, traverse $T_j$, traverse $T_f$)
+
+	\item \textbf{Post-order traversal (bottom up)} \\
+	\textit{Traverse \underline{left} subtree\\
+		Travers \underline{right} subtree\\
+			Examine} \\		
+	\textbf{Result on tree T:} $ a, b, g, c, h, d, e, i, j, f, \zeta$ \\
+		
+	\item \textbf{Inorder traversal } \\
+	\textit{Traverse \underline{left} subtree,\\
+		Examine,\\
+		Travers \underline{right} subtree
+		} \\		
+	\textbf{Result on tree T:} $ f, \zeta, e, j, c, h, b, g, a$ \\
+	Extention for multification trees: Sometimes it might be required to examine the root between several children. 
+	
+	\item \textbf{Break first } \\
+	\textit{Put root $\zeta$ in a queue\\
+		While queue not empty\\
+		Pop off queue\\
+		Examine\\
+		Add children to end of queue}\\
+	\textbf{Result on tree T: }
+	\begin{tabular}{lll}
+		& Q:= $\zeta$ & v $\leftarrow \zeta$ \\
+		v: $\zeta$ & Q = (j, f) & v $\leftarrow$ j\\
+		v: j & Q = (f, h, i) & v $\leftarrow$ f \\
+		v: f & Q = (h, i) & v $\leftarrow$  h \\
+		v: h & Q = (i, g, c) & v $\leftarrow$ i \\
+		v: i & Q = (g, c, d, e) & v $\leftarrow$ g \\
+		v: g & Q = (c, d, e, a, b) & v $\leftarrow$ c\\
+		v: c & Q = (d, e, a, b) & \dots \\
+		v: d & Q = (e, a, b) & \\
+		v: e & Q = (a, b) &\\
+		v: a & Q = (b) &\\
+		v: b & Q = () & \\ 	
+	\end{tabular}
+	\\The first row of the tabular represents the order in which the nodes where examined. \\
+	Proof: Quque higher level $\rightarrow$ first in quque. 	
+	
+	\item Pre-, post- and Inorder traversal are \textbf{depth first traversals}. 
+\end{itemize}
 
 
 \newpage
